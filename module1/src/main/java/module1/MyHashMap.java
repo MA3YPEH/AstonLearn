@@ -1,12 +1,8 @@
 package module1;
 
-import java.util.AbstractMap;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 class MyHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
     private static class Node<K, V> implements Map.Entry<K, V> {
@@ -53,7 +49,7 @@ class MyHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
         return size;
     }
 
-    static final int hash(Object key) {
+    private int hash(Object key) {
         if (key == null) {
             return 0;
         } else {
@@ -63,8 +59,12 @@ class MyHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
         }
     }
 
-    public int getIndex(int keyHash) {
+    private int getIndex(int keyHash) {
         return keyHash & (buckets.length - 1);
+    }
+
+    private boolean isTargetNode(Node<K, V> node, int keyHash, K key) {
+        return node.keyHash == keyHash && ((key == node.key) || (key != null && key.equals(node.key)));
     }
 
     public V put(K key, V value) {
@@ -83,8 +83,7 @@ class MyHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
         }
 
         while (currentNode != null) {
-            if (currentNode.keyHash == keyHash
-                    && ((key == currentNode.key) || (key != null && key.equals(currentNode.key)))) {
+            if (isTargetNode(currentNode, keyHash, key)) {
                 V oldValue = currentNode.value;
                 currentNode.value = value;
                 return oldValue;
@@ -108,8 +107,7 @@ class MyHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
         Node<K, V> currentNode = this.buckets[index];
 
         while (currentNode != null) {
-            if (currentNode.keyHash == keyHash
-                    && ((key == currentNode.key) || (key != null && key.equals(currentNode.key)))) {
+            if (isTargetNode(currentNode, keyHash, key)) {
                 return currentNode.value;
             }
 
@@ -126,8 +124,7 @@ class MyHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
         Node<K, V> previousNode = null;
 
         while (currentNode != null) {
-            if (currentNode.keyHash == keyHash
-                    && ((key == currentNode.key) || (key != null && key.equals(currentNode.key)))) {
+            if (isTargetNode(currentNode, keyHash, key)) {
                 if (previousNode == null) {
                     this.buckets[index] = currentNode.nextNode;
                 } else {
@@ -145,7 +142,7 @@ class MyHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
         return null;
     }
 
-    public void resize() {
+    private void resize() {
         Node<K, V>[] oldBuckets = this.buckets;
         this.buckets = new Node[oldBuckets.length * 2];
         this.size = 0;
