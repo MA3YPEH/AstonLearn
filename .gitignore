@@ -2,3 +2,16 @@ module1/target/classes/module1/Main.class
 module1/target/classes/module1/MyHashMap.class
 module1/target/classes/module1/MyHashMap$1.class
 module1/target/classes/module1/MyHashMap$Node.class
+
+target/
+*.jar
+*.war
+
+.idea/
+*.iml
+*.iws
+
+.settings/
+.project
+.classpath
+.factorypath
