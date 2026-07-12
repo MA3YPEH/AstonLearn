@@ -15,7 +15,7 @@ public class Main {
         map.remove("Франция");
 
         System.out.println("-------------------------------");
-        
+
         for (Map.Entry<String, String> entry : map) {
             System.out.println("Страна: " + entry.getKey() + " | Столица: " + entry.getValue());
         }
